@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: 'Augmented Coding Patterns',
-  description: 'A comprehensive collection of patterns, anti-patterns, and obstacles for effective AI-augmented software development',
+  description: 'A collection of emerging patterns, anti-patterns, and obstacles for effective AI-augmented software development',
   author: {
     name: 'Lada Kesseler',
     github: 'lexler'
