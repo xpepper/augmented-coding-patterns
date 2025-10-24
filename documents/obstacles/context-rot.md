@@ -1,8 +1,9 @@
 ---
 authors: [lada_kesseler, steve_kuo]
+synonyms: [Dementia]
 ---
 
-# Context Rot <Dementia> (Obstacle)
+# Context Rot (Obstacle)
 
 ## Description
 Context degrades as the conversation grows. The model stops following earlier instructions, and performance drops unpredictably This happens long before you hit the context window limit.
