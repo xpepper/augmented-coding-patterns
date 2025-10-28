@@ -58,6 +58,8 @@ graph LR
 
   %% Pattern → Pattern relationships (enables, uses, similar, alternative)
   patterns/reference-docs -->|enables| patterns/knowledge-composition
+  patterns/hooks -->|enables| patterns/habit-hooks
+  patterns/hooks -->|enables| patterns/reminder-hooks
   patterns/context-management -->|uses| patterns/ground-rules
   patterns/context-management -->|uses| patterns/reference-docs
   patterns/context-management -->|uses| patterns/knowledge-document
@@ -73,7 +75,9 @@ graph LR
   patterns/approved-fixtures -->|uses| patterns/feedback-loop
   patterns/approved-fixtures -->|uses| patterns/constrained-tests
   patterns/approved-logs -->|uses| patterns/constrained-tests
+  patterns/habit-hooks -->|uses| patterns/hooks
   patterns/habit-hooks -->|uses| patterns/feedback-loop
+  patterns/reminder-hooks -->|uses| patterns/hooks
   patterns/feedback-loop <-->|similar| patterns/playgrounds
   patterns/feedback-loop <-->|similar| patterns/chain-of-small-steps
   patterns/chain-of-small-steps <-->|similar| patterns/offload-deterministic
