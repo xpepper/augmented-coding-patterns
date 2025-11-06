@@ -1,8 +1,9 @@
 ---
 authors: [ivett_ordog]
+alternative_titles: ["Show me, I will repeat-automate"]
 ---
 
-# Show Me, I'll Repeat/Automate
+# Show the Agent, Let it Repeat/Automate
 
 ## Problem
 AI's non-deterministic nature means it interprets the same task differently each time. Without codified knowledge, you waste time explaining the same mistakes repeatedly, especially for tasks that require multiple iterations (like migrations, refactoring patterns, or complex chores).

@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { getPatternSlugs, getPatternBySlug, getAllPatterns } from '@/lib/markdown'
+import { getPatternSlugs, getPatternBySlug, getAllPatterns, slugToTitleCase, titleToSlug } from '@/lib/markdown'
 import * as relationships from '@/lib/relationships'
 
 jest.mock('fs')
@@ -339,6 +339,63 @@ AI defaults to silent compliance.`
       expect(pattern.relatedPatterns).toEqual([{ slug: 'chain-of-small-steps', type: 'related', direction: 'outgoing' }])
       expect(pattern.relatedAntiPatterns).toEqual([{ slug: 'answer-injection', type: 'related', direction: 'outgoing' }])
     })
+
+    it('should extract alternative_titles from frontmatter', () => {
+      const mockMarkdown = `---
+alternative_titles:
+  - "Show Me, I'll Repeat"
+  - "Repeat After Me"
+---
+# Active Partner
+
+## Problem
+AI defaults to silent compliance.`
+
+      mockedPath.join.mockReturnValue('/fake/path/documents/patterns/active-partner.md')
+      mockedFs.readFileSync.mockReturnValue(mockMarkdown)
+
+      const pattern = getPatternBySlug('patterns', 'active-partner')
+
+      expect(pattern).toBeDefined()
+      expect(pattern.alternativeTitles).toEqual(["Show Me, I'll Repeat", "Repeat After Me"])
+    })
+
+    it('should handle pattern without alternative_titles', () => {
+      const mockMarkdown = `---
+authors: [lexler]
+---
+# Active Partner
+
+## Problem
+AI defaults to silent compliance.`
+
+      mockedPath.join.mockReturnValue('/fake/path/documents/patterns/active-partner.md')
+      mockedFs.readFileSync.mockReturnValue(mockMarkdown)
+
+      const pattern = getPatternBySlug('patterns', 'active-partner')
+
+      expect(pattern).toBeDefined()
+      expect(pattern.alternativeTitles).toBeUndefined()
+    })
+
+    it('should handle alternative_titles with single item', () => {
+      const mockMarkdown = `---
+alternative_titles:
+  - "Old Name"
+---
+# Active Partner
+
+## Problem
+AI defaults to silent compliance.`
+
+      mockedPath.join.mockReturnValue('/fake/path/documents/patterns/active-partner.md')
+      mockedFs.readFileSync.mockReturnValue(mockMarkdown)
+
+      const pattern = getPatternBySlug('patterns', 'active-partner')
+
+      expect(pattern).toBeDefined()
+      expect(pattern.alternativeTitles).toEqual(["Old Name"])
+    })
   })
 
   describe('getAllPatterns', () => {
@@ -644,6 +701,78 @@ AI defaults to silent compliance.`
       expect(pattern.relatedPatterns![0].slug).not.toContain('/')
       expect(pattern.relatedAntiPatterns![0].slug).not.toContain('/')
       expect(pattern.relatedObstacles![0].slug).not.toContain('/')
+    })
+  })
+
+  describe('slugToTitleCase', () => {
+    it('should convert slug to title case', () => {
+      expect(slugToTitleCase('show-me-i-will-repeat')).toBe('Show Me I Will Repeat')
+    })
+
+    it('should handle single word slug', () => {
+      expect(slugToTitleCase('pattern')).toBe('Pattern')
+    })
+
+    it('should handle slug with two words', () => {
+      expect(slugToTitleCase('active-partner')).toBe('Active Partner')
+    })
+
+    it('should handle slug with multiple hyphens', () => {
+      expect(slugToTitleCase('chain-of-small-steps')).toBe('Chain Of Small Steps')
+    })
+
+    it('should handle empty string', () => {
+      expect(slugToTitleCase('')).toBe('')
+    })
+
+    it('should handle slug with underscores (edge case)', () => {
+      expect(slugToTitleCase('some_name')).toBe('Some_name')
+    })
+
+    it('should preserve capitalization of subsequent letters in word', () => {
+      expect(slugToTitleCase('api-integration')).toBe('Api Integration')
+    })
+  })
+
+  describe('titleToSlug', () => {
+    it('should convert title to slug', () => {
+      expect(titleToSlug("Show Me, I'll Repeat")).toBe('show-me-ill-repeat')
+    })
+
+    it('should handle title with forward slash', () => {
+      expect(titleToSlug("Show Me, I'll Repeat/Automate")).toBe('show-me-ill-repeatautomate')
+    })
+
+    it('should handle title with multiple spaces', () => {
+      expect(titleToSlug("Active  Partner")).toBe('active-partner')
+    })
+
+    it('should handle title with special characters', () => {
+      expect(titleToSlug("What's Your Plan?")).toBe('whats-your-plan')
+    })
+
+    it('should handle title with punctuation', () => {
+      expect(titleToSlug("Step 1: Begin, Step 2: Continue")).toBe('step-1-begin-step-2-continue')
+    })
+
+    it('should handle single word title', () => {
+      expect(titleToSlug("Pattern")).toBe('pattern')
+    })
+
+    it('should handle empty string', () => {
+      expect(titleToSlug('')).toBe('')
+    })
+
+    it('should handle title with trailing/leading spaces', () => {
+      expect(titleToSlug('  Active Partner  ')).toBe('active-partner')
+    })
+
+    it('should collapse multiple hyphens', () => {
+      expect(titleToSlug('Show---Me')).toBe('show-me')
+    })
+
+    it('should remove parentheses and brackets', () => {
+      expect(titleToSlug('Pattern (Anti-pattern)')).toBe('pattern-anti-pattern')
     })
   })
 })

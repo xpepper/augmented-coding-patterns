@@ -18,6 +18,7 @@ export interface PatternMetadata {
   slug: string
   emojiIndicator?: string
   authors?: string[]
+  alternativeTitles?: string[]
   relatedPatterns?: RelatedPattern[]
   relatedAntiPatterns?: RelatedPattern[]
   relatedObstacles?: RelatedPattern[]

@@ -54,6 +54,23 @@ function validateSlug(slug: string): void {
   }
 }
 
+export function slugToTitleCase(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
+export function titleToSlug(title: string): string {
+  return title
+    .trim() // Trim first before processing
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove special characters except word chars, spaces, and hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-+|-+$/g, '') // Remove leading and trailing hyphens
+}
+
 export function getPatternSlugs(category: PatternCategory): string[] {
   const categoryPath = getCategoryPath(category)
 
@@ -160,14 +177,16 @@ export function getPatternBySlug(
       slug,
       ...(emoji && { emojiIndicator: emoji }),
       ...(data.authors && { authors: data.authors }),
+      ...(data.alternative_titles && { alternativeTitles: data.alternative_titles }),
       ...(mergedPatterns.length > 0 && { relatedPatterns: mergedPatterns }),
       ...(mergedAntiPatterns.length > 0 && { relatedAntiPatterns: mergedAntiPatterns }),
       ...(mergedObstacles.length > 0 && { relatedObstacles: mergedObstacles }),
       content: contentWithoutTitle,
       rawContent: fileContents
     }
-  } catch (error) {
-    console.error(`Failed to read pattern file: ${fullPath}`, error)
+  } catch {
+    // File not found - this is expected for alternative title slugs
+    // The caller will handle this by searching for alternative titles
     return null
   }
 }
