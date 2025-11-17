@@ -52,6 +52,8 @@ graph LR
   patterns/constrained-tests -->|solves| anti-patterns/flying-blind
   patterns/habit-hooks -->|solves| obstacles/cannot-learn
   patterns/habit-hooks -->|solves| obstacles/context-rot
+  patterns/hooks -->|solves| obstacles/selective-hearing
+  patterns/reminders -->|solves| obstacles/selective-hearing
 
   %% Pattern → Pattern relationships (enables, uses, similar, alternative)
   patterns/reference-docs -->|enables| patterns/knowledge-composition
@@ -98,6 +100,7 @@ graph LR
 
   %% Obstacle → Obstacle relationships (related)
   obstacles/solution-fixation -->|related| obstacles/compliance-bias
+  obstacles/selective-hearing -->|related| obstacles/context-rot
 
   %% Obstacle → Anti-pattern relationships (related)
   obstacles/obedient-contractor -->|related| anti-patterns/silent-misalignment
